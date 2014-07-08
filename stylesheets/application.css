@@ -1,0 +1,9 @@
+.character-picker {
+  float: left;
+  width: 20%;
+  height: 100%;
+}
+
+.character-picker .character {
+  height: 20px;
+}
