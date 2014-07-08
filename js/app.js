@@ -171,6 +171,14 @@ App.RoomsController = Ember.ArrayController.extend({
   }.property("controllers.index.model.user.id"),
   character: null,
   actions: {
+    gotoRoom: function(room) {
+      if(!!this.get("character")) {
+        this.transitionTo("messages", room);
+      }
+      else {
+        alert("You need to select a character!");
+      }
+    },
     newRoom: function(){
       var room = this.store.createRecord("room", {
         name: this.get("roomName"),
@@ -272,6 +280,57 @@ App.Character.reopenClass({
 App.ColoredTextArea = Ember.TextArea.extend({
   attributeBindings: ["style"],
   style: function(){
-    return "color:" + this.get("color") + ";";
+    return "color:" + this.get("color") + ";width:100%;";
   }.property("color")
 });
+
+App.RollerComponentComponent = Ember.Component.extend({
+  difficulty: 6,
+  dice: 0,
+  name: "",
+  actions: {
+    rollDice: function(){
+      console.log("Dice", this.get("dice"));
+      console.log("Diff", this.get("difficulty"));
+      var successes = 0;
+      var botch = 0;
+      var rolls = [];
+      for(var i = 0; i < this.get("dice"); i++) {
+        var roll = Math.ceil(Math.random() * 10);
+        if(roll == 10){
+          successes++;
+        }
+        if(roll >= this.get("difficulty")) {
+          successes++;
+          botch = 1;
+        }
+        else if (roll == 1) {
+          successes--;
+        }
+        rolls.push(roll);
+      }
+
+      console.log("Rolls", rolls);
+      console.log("successes", successes);
+      var message = "";
+
+      if(successes < 0) {
+        //Botch
+      }
+      else {
+        if(successes == 1) {
+          message = this.get("name") + " rolled " + rolls.toString().replace(/,/g, ", ") + " for " + successes + " success.";
+        }
+        else {
+          message = this.get("name") + " rolled " + rolls.toString().replace(/,/g, ", ") + " for " + successes + " successes.";
+        }
+      }
+
+      this.store.createRecord("message", {
+        color: "#000000",
+        body: message,
+        room: "Campfire"
+      }).save()
+    }
+  }
+})

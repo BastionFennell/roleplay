@@ -68,8 +68,8 @@
         {{character-picker character=character userBinding=user}}
       </div>
       {{#each room in this}}
-        <div>
-        {{#link-to 'messages' room.name}}{{room.name}}{{/link-to}}
+        <div {{action gotoRoom room.name}}>
+          <a href="#">{{room.name}}</a>
         </div>
         <div class="destroy" {{action "destroyRoom" room.name}}>X</div>
       {{else}}
@@ -86,6 +86,7 @@
       <div class="input">
         <div>
           {{input valueBinding=color}}
+          {{roller-component nameBinding=name}}
         </div>
         {{view App.ColoredTextArea rows=4 cols=100 action="submit" valueBinding=message colorBinding=color}}
       </div>
@@ -134,6 +135,13 @@
         </div>
       </div>
       <button {{action "submit"}}>Submit!</button>
+    </script>
+    <script type="text/x-handlebars" data-template-name="components/roller-component">
+      <div id="roller">
+        {{input valueBinding="difficulty" size=2 maxlength=2}}
+        {{input valueBinding="dice" size=5}}
+        <button {{action "rollDice"}}>Roll</button>
+      </div>
     </script>
     <script type="text/x-handlebars" data-template-name="components/character-picker">
       <div class="character-picker">
