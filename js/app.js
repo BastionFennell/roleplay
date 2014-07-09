@@ -1,4 +1,37 @@
 window.App = Ember.Application.create();
+(function () {
+
+  var original = document.title;
+  var timeout;
+
+  window.flashTitle = function (newMsg, howManyTimes) {
+        function step() {
+                  document.title = (document.title == original) ? newMsg : original;
+
+                          if (--howManyTimes > 0) {
+                                        timeout = setTimeout(step, 1000);
+                                                };
+                              };
+
+            howManyTimes = parseInt(howManyTimes);
+
+                if (isNaN(howManyTimes)) {
+                          howManyTimes = 5;
+                              };
+
+                    cancelFlashTitle(timeout);
+                        step();
+  };
+
+  window.cancelFlashTitle = function () {
+        clearTimeout(timeout);
+            document.title = original;
+  };
+
+}());
+window.onmouseover = function(){
+  cancelFlashTitle();
+}
 
 App.Store = FP.Store.extend({
     firebaseRoot: "https://snowyrat.firebaseio.com"
@@ -243,19 +276,31 @@ App.NewCharacterController = Ember.Controller.extend({
   }
 })
 
-App.MessagesView = Ember.View.extend({
+App.MessagesController = Ember.ArrayController.extend({
+  needs: ["rooms"],
+  name: function(){
+    return this.get("controllers.rooms.character");
+  }.property("controllers.rooms.character"),
   initialize: function() {
     var length = 0;
     var controller = this.get("controller");
+    var name = this.get("name");
     window.setInterval(function() {
-      if($(".messages").length && this.get("controller").content.content.length != length){
-        length = this.get("controller").content.content.length;
+      if($(".messages").length && this.get("model.length") != length){
+        var lastMessage = this.get("model").content.slice(-1)[0].get("body");
+
         $(".messages").scrollTop($(".messages")[0].scrollHeight);
-        var audio = new Audio('assets/notification.mp3');
-        audio.play();
+
+        var nameRegExp = new RegExp("^\\[" + this.get("name") + "\\]");
+        if(!lastMessage.match(nameRegExp) && length != 0) {
+          flashTitle("New Message!");
+          var audio = new Audio('assets/notification.mp3');
+          audio.play();
+        }
+        length = this.get("model.length");
       }
     }.bind(this), 100);
-  }.on("didInsertElement")
+  }.on("init")
 })
 
 App.Room.reopenClass({
