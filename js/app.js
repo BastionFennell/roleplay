@@ -251,6 +251,8 @@ App.MessagesView = Ember.View.extend({
       if($(".messages").length && this.get("controller").content.content.length != length){
         length = this.get("controller").content.content.length;
         $(".messages").scrollTop($(".messages")[0].scrollHeight);
+        var audio = new Audio('assets/notification.mp3');
+        audio.play();
       }
     }.bind(this), 100);
   }.on("didInsertElement")
