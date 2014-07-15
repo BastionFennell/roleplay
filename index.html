@@ -86,7 +86,7 @@
       <div class="input">
         <div>
           {{input valueBinding=color}}
-          {{roller-component nameBinding=name}}
+          {{roller-component nameBinding=name roomBinding=model.name}}
         </div>
         {{view App.ColoredTextArea rows=4 cols=100 action="submit" valueBinding=message colorBinding=color}}
       </div>

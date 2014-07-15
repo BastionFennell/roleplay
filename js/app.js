@@ -335,8 +335,10 @@ App.RollerComponentComponent = Ember.Component.extend({
   difficulty: 6,
   dice: 0,
   name: "",
+  room: "",
   actions: {
     rollDice: function(){
+      console.log("Room", this.get("room"));
       console.log("Dice", this.get("dice"));
       console.log("Diff", this.get("difficulty"));
       var successes = 0;
@@ -362,21 +364,21 @@ App.RollerComponentComponent = Ember.Component.extend({
       var message = "";
 
       if(successes < 0) {
-        //Botch
+        message = this.get("name") + " rolled " + this.get("dice") + " dice at difficulty " + this.get("difficulty") + ". They rolled " + rolls.toString().replace(/,/g, ", ") + " for " + successes + " success.";
       }
       else {
         if(successes == 1) {
-          message = this.get("name") + " rolled " + rolls.toString().replace(/,/g, ", ") + " for " + successes + " success.";
+          message = this.get("name") + " rolled " + this.get("dice") + " dice at difficulty " + this.get("difficulty") + ". They rolled " + rolls.toString().replace(/,/g, ", ") + " for " + successes + " success.";
         }
         else {
-          message = this.get("name") + " rolled " + rolls.toString().replace(/,/g, ", ") + " for " + successes + " successes.";
+          message = this.get("name") + " rolled " + this.get("dice") + " dice at difficulty " + this.get("difficulty") + ". They rolled " + rolls.toString().replace(/,/g, ", ") + " for " + successes + " successes.";
         }
       }
 
       this.store.createRecord("message", {
         color: "#000000",
         body: message,
-        room: "Campfire"
+        room: this.get("room")
       }).save()
     }
   }
