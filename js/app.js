@@ -348,9 +348,6 @@ App.RollerComponentComponent = Ember.Component.extend({
   room: "",
   actions: {
     rollDice: function(){
-      console.log("Room", this.get("room"));
-      console.log("Dice", this.get("dice"));
-      console.log("Diff", this.get("difficulty"));
       var successes = 0;
       var botch = 0;
       var rolls = [];
@@ -369,8 +366,6 @@ App.RollerComponentComponent = Ember.Component.extend({
         rolls.push(roll);
       }
 
-      console.log("Rolls", rolls);
-      console.log("successes", successes);
       var message = "";
 
       if(successes < 0) {
