@@ -56,10 +56,10 @@
       <button {{action "logout"}}>Logout</button>
       {{else}}
       <div class="username">
-        {{input valueBinding="username" placeholder="test@example.com"}}
+        {{input valueBinding="username" placeholder="test@example.com" action="login"}}
       </div>
       <div class="password">
-        {{input valueBinding="password" placeholder="Password" type="password"}}
+        {{input valueBinding="password" placeholder="Password" type="password" action="login"}}
       </div>
       <div class="buttons">
         <button {{action "login"}}>Login</button>
