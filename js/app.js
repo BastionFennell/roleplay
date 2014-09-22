@@ -254,6 +254,10 @@ App.RoomController = Ember.Controller.extend({
   color: "#000000",
   actions:{
     submit: function(){
+      if(this.get("message") === "\n"){
+        this.set("message", "");
+        return;
+      }
       var self = this;
       var message = this.store.createRecord("message", {
         body: "[" + self.get("name") + "] " + self.get("message"),
