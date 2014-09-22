@@ -8,6 +8,10 @@
   height: 20px;
 }
 
-.input input {
+#roller {
+  float: left;
+}
+
+.message-editor >input {
   float: left;
 }

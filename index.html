@@ -49,12 +49,22 @@
 
     <script type="text/x-handlebars" data-template-name="index/index">
       Welcome to The Bastion!
+      {{#if authenticated}}
       <div>
-        {{input valueBinding="username" placeholder="test@example.com"}}
-        {{input valueBinding="password" placeholder="Password" type="password"}}
-        <button {{action "authenticate"}}>Authenticate!</button>
-        <button {{action "logout"}}>Logout!</button>
+        You are logged in as {{user.name}}
       </div>
+      <button {{action "logout"}}>Logout</button>
+      {{else}}
+      <div class="username">
+        {{input valueBinding="username" placeholder="test@example.com"}}
+      </div>
+      <div class="password">
+        {{input valueBinding="password" placeholder="Password" type="password"}}
+      </div>
+      <div class="buttons">
+        <button {{action "login"}}>Login</button>
+      </div>
+      {{/if}}
     </script>
 
     <script type="text/x-handlebars" data-template-name="index/about">
@@ -84,8 +94,8 @@
         {{outlet}}
       </div>
       <div class="input">
-        <div>
-          {{input valueBinding=color}}
+        <div class="message-editor">
+          {{input valueBinding=color className="color-picker"}}
           {{roller-component nameBinding=name roomBinding=model.name}}
         </div>
         {{view App.ColoredTextArea rows=4 cols=100 action="submit" valueBinding=message colorBinding=color}}
@@ -138,8 +148,8 @@
     </script>
     <script type="text/x-handlebars" data-template-name="components/roller-component">
       <div id="roller">
-        {{input valueBinding="difficulty" size=2 maxlength=2}}
-        {{input valueBinding="dice" size=5}}
+        Difficulty: {{input valueBinding="difficulty" size=2 maxlength=2}}
+        Dice: {{input valueBinding="dice" size=5}}
         <button {{action "rollDice"}}>Roll</button>
       </div>
     </script>

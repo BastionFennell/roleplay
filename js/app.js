@@ -5,30 +5,30 @@ window.App = Ember.Application.create();
   var timeout;
 
   window.flashTitle = function (newMsg, howManyTimes) {
-        function step() {
-                  document.title = (document.title == original) ? newMsg : original;
+    function step() {
+      document.title = (document.title == original) ? newMsg : original;
 
-                          if (--howManyTimes > 0) {
-                                        timeout = setTimeout(step, 1000);
-                                                };
-                              };
+      if (--howManyTimes > 0) {
+        timeout = setTimeout(step, 1000);
+      };
+    };
 
-            howManyTimes = parseInt(howManyTimes);
+    howManyTimes = parseInt(howManyTimes);
 
-                if (isNaN(howManyTimes)) {
-                          howManyTimes = 5;
-                              };
+    if (isNaN(howManyTimes)) {
+      howManyTimes = 5;
+    };
 
-                    cancelFlashTitle(timeout);
-                        step();
+    cancelFlashTitle(timeout);
+    step();
   };
 
   window.cancelFlashTitle = function () {
-        clearTimeout(timeout);
-            document.title = original;
+    clearTimeout(timeout);
+    document.title = original;
   };
-
 }());
+
 window.onmouseover = function(){
   cancelFlashTitle();
 }
@@ -92,15 +92,19 @@ App.CharactersIndexController = Ember.ArrayController.extend({
   actions: {
     deleteCharacter: function(character) {
       var store = this.store;
-      this.store.fetch("character", {id: character.get("id"), user: 3}).then(function(result) {
-        store.deleteRecord(result);
-      })
+      if(confirm("Are you sure you want to delete " + character.get("id") + "?")){
+        this.store.fetch("character", {id: character.get("id"), user: 3}).then(function(result) {
+          store.deleteRecord(result);
+        })
+      }
     }
   }
 })
 
 App.IndexIndexController = Ember.Controller.extend({
   needs: "index",
+  authenticated: Ember.computed.alias("controllers.index.model.authenticated"),
+  user: Ember.computed.alias("controllers.index.model.user"),
   actions: {
     logout: function(){
       this.set("controllers.index.model.authenticated", false);
@@ -119,7 +123,7 @@ App.IndexIndexController = Ember.Controller.extend({
 
       auth.logout();
     },
-    authenticate: function(){
+    login: function(){
       var chatRef = new Firebase('https://snowyrat.firebaseio.com');
       var self = this;
 
@@ -222,9 +226,11 @@ App.RoomsController = Ember.ArrayController.extend({
     },
     destroyRoom: function(room){
       var store = this.store;
+      if(confirm("Are you sure you want to delete " + room + "?")){
       var room = this.store.fetch("room", room).then(function(result) {
         store.deleteRecord(result);
       })
+    }
     }
   }
 })
