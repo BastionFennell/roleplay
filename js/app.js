@@ -158,7 +158,8 @@ App.User = FP.Model.extend({
 
 App.Character = FP.Model.extend({
   name: FP.attr(),
-  description: FP.attr()
+  description: FP.attr(),
+  color: FP.attr()
 })
 
 App.MessagesRoute = Ember.Route.extend({
@@ -252,6 +253,24 @@ App.RoomController = Ember.Controller.extend({
     return this.get("controllers.rooms.character");
   }.property("controllers.rooms.character"),
   color: "#000000",
+  announce: function(){
+    var self = this;
+    var message = this.store.createRecord("message", {
+      body: self.get("name") + " has entered the room",
+      color: "color: gray;",
+      room: self.get("model.name")
+    })
+    message.save();
+    this.store.fetch("character", {user: self.get("controllers.index.user.id")}).then(function(result){
+      var character = result.findBy("id", self.get("name"));
+      if(character.get("color")){
+        self.set("color", character.get("color"));
+      }
+      else {
+        self.set("color", "#000000");
+      }
+    });
+  }.observes("model", "name"),
   actions:{
     submit: function(){
       if(this.get("message") === "\n"){
@@ -266,6 +285,14 @@ App.RoomController = Ember.Controller.extend({
       })
       message.save();
       this.set("message", "");
+      this.store.fetch("character", {user: self.get("controllers.index.user.id")}).then(function(result){
+        var character = result.findBy("id", self.get("name"));
+        if(character.get("color") != self.get("color")){
+          character.set("color", self.get("color"));
+          character.save();
+        }
+      });
+      //this.get("controllers.rooms.character").set("color", this.get("color")).save()
     }
   }
 })
